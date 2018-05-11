@@ -1,11 +1,10 @@
-#include "cnh_crypto/cn_slow_hash.hpp"
-#include "cnh_crypto/cnh_hash.h"
-
-extern "C" {
-  void cryptonight_hash(const char* input, char* output, uint32_t len);
-}
+#include "crypto/hash-ops.h"
 
 void cryptonight_hash(const char* input, char* output, uint32_t len) {
-  static thread_local cn_pow_hash_v2 ctx2;
-  ctx2.hash(input, len, output);
+    const int variant = input[0] >= 7 ? input[0] - 6 : 0;
+    cn_slow_hash(input, len, output, variant, 0);
+}
+
+void cryptonight_fast_hash(const char* input, char* output, uint32_t len) {
+    cn_fast_hash(input, len, output);
 }
